@@ -4,6 +4,7 @@ require 'gitsh/history'
 require 'gitsh/interpreter'
 require 'gitsh/prompter'
 require 'gitsh/readline_blank_filter'
+require 'gitsh/term_info'
 
 module Gitsh
   class InteractiveRunner
@@ -12,6 +13,7 @@ module Gitsh
       @env = opts[:env]
       @history = opts.fetch(:history, History.new(@env, @readline))
       @interpreter = opts.fetch(:interpreter, Interpreter.new(@env))
+      @term_info = opts.fetch(:term_info) { TermInfo.instance }
     end
 
     def run
@@ -25,7 +27,7 @@ module Gitsh
 
     private
 
-    attr_reader :history, :readline, :env, :interpreter
+    attr_reader :history, :readline, :env, :interpreter, :term_info
 
     def setup_readline
       readline.completion_append_character = nil
@@ -62,12 +64,7 @@ module Gitsh
     end
 
     def prompter
-      @prompter ||= Prompter.new(env: env, color: color_support?)
-    end
-
-    def color_support?
-      output, error, exit_status = Open3.capture3('tput colors')
-      exit_status.success? && output.chomp.to_i > 0
+      @prompter ||= Prompter.new(env: env, color: term_info.color_support?)
     end
   end
 end

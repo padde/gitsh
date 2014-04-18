@@ -51,8 +51,13 @@ describe Gitsh::InteractiveRunner do
       interpreter: interpreter,
       readline: readline,
       history: history,
-      env: env
+      env: env,
+      term_info: term_info
     )
+  end
+
+  def interpreter
+    @interpreter ||= stub('interpreter', execute: nil)
   end
 
   def history
@@ -77,7 +82,7 @@ describe Gitsh::InteractiveRunner do
     })
   end
 
-  def interpreter
-    @interpreter ||= stub('interpreter', execute: nil)
+  def term_info
+    stub('term_info', color_support?: true)
   end
 end
