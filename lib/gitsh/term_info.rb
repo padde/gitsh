@@ -9,6 +9,14 @@ module Gitsh
       tput('colors').to_i > 0
     end
 
+    def lines
+      tput('lines').to_i
+    end
+
+    def cols
+      tput('cols').to_i
+    end
+
     private
 
     def tput(property)

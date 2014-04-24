@@ -19,6 +19,7 @@ module Gitsh
     def run
       history.load
       setup_readline
+      handle_window_resize
       greet_user
       interactive_loop
     ensure
@@ -32,6 +33,12 @@ module Gitsh
     def setup_readline
       readline.completion_append_character = nil
       readline.completion_proc = Completer.new(readline, env)
+    end
+
+    def handle_window_resize
+      Signal.trap('WINCH') do
+        readline.set_screen_size(term_info.lines, term_info.cols)
+      end
     end
 
     def greet_user

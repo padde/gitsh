@@ -34,6 +34,26 @@ describe Gitsh::TermInfo do
     end
   end
 
+  context '#lines' do
+    it 'returns the number of lines the terminal has' do
+      stub_tput_invocation output: "24\n"
+
+      result = Gitsh::TermInfo.instance.lines
+
+      expect(result).to eq 24
+    end
+  end
+
+  context '#cols' do
+    it 'returns the number of columns the terminal has' do
+      stub_tput_invocation output: "80\n"
+
+      result = Gitsh::TermInfo.instance.cols
+
+      expect(result).to eq 80
+    end
+  end
+
   def stub_tput_invocation(options = {})
     Open3.stubs(:capture3).returns [
       options.fetch(:output, ''),

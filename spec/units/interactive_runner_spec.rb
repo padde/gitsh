@@ -44,12 +44,25 @@ describe Gitsh::InteractiveRunner do
       expect(interpreter).to have_received(:execute).with('b')
     end
 
+    it 'handles a SIGWINCH' do
+      readline = SignallingReadline.new('WINCH')
+      readline.stubs(:set_screen_size)
+      runner = build_interactive_runner(readline: readline)
+
+      begin
+        runner.run
+      rescue SystemExit
+        p :bad
+      end
+
+      expect(readline).to have_received(:set_screen_size).with(24, 80)
+    end
   end
 
-  def build_interactive_runner
+  def build_interactive_runner(options={})
     Gitsh::InteractiveRunner.new(
       interpreter: interpreter,
-      readline: readline,
+      readline: options.fetch(:readline, readline),
       history: history,
       env: env,
       term_info: term_info
@@ -83,6 +96,6 @@ describe Gitsh::InteractiveRunner do
   end
 
   def term_info
-    stub('term_info', color_support?: true)
+    stub('term_info', color_support?: true, lines: 24, cols: 80)
   end
 end
