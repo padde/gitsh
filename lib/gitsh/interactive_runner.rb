@@ -9,7 +9,7 @@ require 'gitsh/term_info'
 module Gitsh
   class InteractiveRunner
     def initialize(opts)
-      @readline = ReadlineBlankFilter.new(opts.fetch(:readline, Readline))
+      @readline = opts.fetch(:readline) { ReadlineBlankFilter.new(Readline) }
       @env = opts[:env]
       @history = opts.fetch(:history, History.new(@env, @readline))
       @interpreter = opts.fetch(:interpreter, Interpreter.new(@env))
