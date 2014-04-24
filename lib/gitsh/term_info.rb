@@ -1,4 +1,5 @@
 require 'singleton'
+require 'open3'
 
 module Gitsh
   class TermInfo
